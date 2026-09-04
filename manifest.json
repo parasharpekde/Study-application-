@@ -1,11 +1,12 @@
 {
-  "name": "FlowState — Distraction-Free Focus & Study Squads",
+  "name": "FlowState — Deep Work Focus Hub",
   "short_name": "FlowState",
-  "description": "Zero-drift focus timer, custom ambient audio vault, and offline-first study squad tracker.",
-  "start_url": "/",
+  "description": "Zero-drift focus timer, custom ambient audio vault, and offline-first personal focus tracker.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#080a11",
-  "theme_color": "#00f2fe",
+  "background_color": "#faf5ff",
+  "theme_color": "#7C3AED",
   "orientation": "portrait-primary",
   "icons": [
     {
