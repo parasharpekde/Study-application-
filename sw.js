@@ -10,24 +10,27 @@ const SYNC_TAG = 'flowstate-offline-sync';
 
 // ── Static App Shell ───────────────────────────────────────────────────────
 const PRECACHE_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/css/main.css',
-  '/css/timer.css',
-  '/css/audio.css',
-  '/css/squad.css',
-  '/css/analytics.css',
-  '/js/app.js',
-  '/js/state.js',
-  '/js/timer.js',
-  '/js/audio-engine.js',
-  '/js/task-logger.js',
-  '/js/squad-engine.js',
-  '/js/analytics-engine.js',
-  '/js/supabase-client.js',
-  '/js/custom-audio-db.js',
-  '/js/offline-sync-manager.js'
+  './',
+  './index.html',
+  './login.html',
+  './manifest.json',
+  './css/main.css',
+  './css/timer.css',
+  './css/audio.css',
+  './css/squad.css',
+  './css/analytics.css',
+  './js/app.js',
+  './js/login.js',
+  './js/auth-engine.js',
+  './js/state.js',
+  './js/timer.js',
+  './js/audio-engine.js',
+  './js/task-logger.js',
+  './js/squad-engine.js',
+  './js/analytics-engine.js',
+  './js/supabase-client.js',
+  './js/custom-audio-db.js',
+  './js/offline-sync-manager.js'
 ];
 
 // ── Google Fonts — runtime-cached on first visit ───────────────────────────
