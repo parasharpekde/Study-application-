@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In • FlowState Focus Hub</title>
+  <meta name="description" content="Sign in or create an account to access FlowState focus timers, soundscapes, and study squads with Supabase cloud sync.">
+  <meta name="theme-color" content="#7c3aed">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    /* Dedicated Login Page Styles */
+    .login-page-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .login-card {
+      background: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius-3xl);
+      padding: 2.5rem 2.25rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 60px -15px rgba(99, 102, 241, 0.15), 0 4px 14px rgba(0, 0, 0, 0.03);
+      position: relative;
+      animation: loginCardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes loginCardIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .login-brand-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .login-brand-logo {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--accent-violet), var(--accent-indigo));
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+      color: #ffffff;
+      margin-bottom: 0.9rem;
+    }
+
+    .login-brand-title {
+      font-family: var(--font-heading);
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .login-brand-subtitle {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    .login-features-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .login-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 0.35rem 0.8rem;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: 0 2px 6px rgba(99, 102, 241, 0.04);
+    }
+
+    .guest-action-divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin: 1.25rem 0;
+    }
+
+    .guest-action-divider::before,
+    .guest-action-divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .guest-action-divider span {
+      padding: 0 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-guest-launch {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-heading);
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 0.75rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-guest-launch:hover {
+      background: #ffffff;
+      border-color: var(--accent-violet-border);
+      color: var(--accent-violet);
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.1);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Pastel Lighting Glows -->
+  <div class="ambient-glow ambient-glow-1"></div>
+  <div class="ambient-glow ambient-glow-2"></div>
+
+  <div class="login-page-container">
+    <div class="login-card">
+      
+      <!-- Brand Header -->
+      <div class="login-brand-header">
+        <div class="login-brand-logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <h1 class="login-brand-title">FlowState</h1>
+        <p class="login-brand-subtitle" id="login-subtitle-text">Enter your personal focus sanctuary</p>
+      </div>
+
+      <!-- Alert Box -->
+      <div id="login-alert" class="auth-alert" style="display: none;"></div>
+
+      <!-- Auth Mode Switcher Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tab-btn-signin" type="button">Sign In</button>
+        <button class="auth-tab-btn" id="tab-btn-signup" type="button">Create Account</button>
+      </div>
+
+      <!-- Auth Form -->
+      <form id="login-form">
+        <!-- Display Name Field (for Signup) -->
+        <div class="form-group" id="group-display-name" style="display: none;">
+          <label class="form-label" for="login-input-name">Your Full Name</label>
+          <input type="text" id="login-input-name" class="form-input" placeholder="e.g. Alex Morgan" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-input-email">Email Address</label>
+          <input type="email" id="login-input-email" class="form-input" placeholder="you@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-input-password">Password</label>
+          <input type="password" id="login-input-password" class="form-input" placeholder="At least 6 characters" minlength="6" required />
+        </div>
+
+        <button type="submit" class="btn-primary" id="btn-login-submit" style="width: 100%; margin-top: 0.6rem; padding: 0.85rem;">
+          Sign In & Launch
+        </button>
+      </form>
+
+      <!-- Guest Access Option -->
+      <div class="guest-action-divider">
+        <span>OR QUICK ACCESS</span>
+      </div>
+
+      <button type="button" class="btn-guest-launch" id="btn-login-guest">
+        <span>Continue as Guest (Offline Local Mode)</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+
+    </div>
+
+    <!-- Feature Highlights Strip -->
+    <div class="login-features-strip">
+      <div class="login-feature-item">
+        <span>⏱️</span>
+        <span>Zero-Drift Timers</span>
+      </div>
+      <div class="login-feature-item">
+        <span>🎧</span>
+        <span>Private Audio Vault</span>
+      </div>
+      <div class="login-feature-item">
+        <span>👥</span>
+        <span>Study Squads</span>
+      </div>
+      <div class="login-feature-item">
+        <span>☁️</span>
+        <span>Supabase Sync</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Login Page Controller Script -->
+  <script type="module" src="js/login.js"></script>
+</body>
+</html>

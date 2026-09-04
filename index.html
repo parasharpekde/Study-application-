@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowState • Deep Work Focus Hub & Multiplayer Study Squad</title>
+  <meta name="description" content="Clean, modern, light-themed focus tracking application inspired by soft pastel UI designs with violet glow gradients and floating cards.">
+  <meta name="theme-color" content="#7c3aed">
+
+  <!-- Modern Google Fonts: Plus Jakarta Sans, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <!-- FlowState Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/timer.css">
+  <link rel="stylesheet" href="css/audio.css">
+  <link rel="stylesheet" href="css/squad.css">
+  <link rel="stylesheet" href="css/analytics.css">
+</head>
+<body>
+  <!-- Top-Level Offline & Deep Focus Active Banner -->
+  <div id="offline-mode-banner" role="status" aria-live="polite">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+    <span id="offline-banner-text">Offline Mode Active — Focus sessions are safely recorded in local queue</span>
+  </div>
+
+  <!-- Service Worker Update Available Notification -->
+  <div id="sw-update-banner" role="alert">
+    <span>A new FlowState version is available!</span>
+    <div style="display: flex; gap: 0.5rem;">
+      <button class="btn-sw-reload" id="btn-sw-reload">Update Now</button>
+      <button class="btn-sw-dismiss" id="btn-sw-dismiss">Later</button>
+    </div>
+  </div>
+
+  <div id="app-container">
+    <!-- Ambient Pastel Lighting Glows -->
+    <div class="ambient-glow ambient-glow-1"></div>
+    <div class="ambient-glow ambient-glow-2"></div>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <a href="#" class="brand-container" id="brand-logo-link">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="brand-text">Flow<span>State</span></div>
+      </a>
+
+      <!-- Center View Tabs -->
+      <nav class="nav-tabs">
+        <button class="tab-btn active" data-view="timer" id="tab-nav-timer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Focus Hub</span>
+        </button>
+        <button class="tab-btn" data-view="squad" id="tab-nav-squad">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Study Squad</span>
+          <span class="tab-badge" id="squad-active-pill">Solo</span>
+        </button>
+        <button class="tab-btn" data-view="analytics" id="tab-nav-analytics">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Analytics</span>
+        </button>
+      </nav>
+
+      <!-- Right Navigation Actions -->
+      <div class="nav-actions">
+        <!-- Network Status Badge -->
+        <div class="network-status-badge" id="network-status-badge" title="Network & Focus Mode Status">
+          <span class="net-status-dot" id="net-status-dot"></span>
+          <span class="net-status-label" id="net-status-label">Online</span>
+        </div>
+
+        <button class="icon-btn" id="btn-open-cloud-sync" title="Supabase Database & Realtime Sync" style="display: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+        </button>
+        <button class="nav-auth-btn" id="btn-auth-user" title="Account & Profile">
+          <img id="auth-user-nav-avatar" src="" alt="Avatar" class="nav-avatar-mini" style="display: none;" />
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span id="auth-user-btn-label">Sign In</span>
+        </button>
+        <button class="icon-btn" id="btn-open-help" title="Keyboard Shortcuts & Guide">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Viewport Area -->
+    <main class="main-content">
+      
+      <!-- ===================================================================
+           VIEW 1: FOCUS DASHBOARD (RESPONSIVE 3-COLUMN LAYOUT)
+           =================================================================== -->
+      <section id="view-timer" class="view-section active">
+        <div class="dashboard-3col-grid">
+
+          <!-- ─────────────────────────────────────────────────────────────
+               LEFT COLUMN: SQUADS & AUDIO
+               ───────────────────────────────────────────────────────────── -->
+          <div class="dashboard-col">
+            
+            <!-- 1. Focus Soundscape Card -->
+            <div class="floating-card soundscape-card">
+              <div class="card-header-row">
+                <div class="card-title-group">
+                  <div class="card-title-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                  </div>
+                  <div>
+                    <h2 class="card-title">Focus Soundscape</h2>
+                    <div class="card-subtitle" id="audio-now-playing-title">Warm Brown Noise</div>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 0.35rem;">
+                  <button class="btn-audio-mini" id="btn-audio-mute-toggle" title="Mute/Unmute [M]">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                  </button>
+                  <button class="btn-audio-mini" id="btn-audio-play-toggle" title="Play/Pause Focus Sound">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Ambient Sound Picker Presets -->
+              <div class="sound-presets-row" id="sound-presets-container">
+                <button class="preset-chip active" data-preset="brown">
+                  <span>☕ Brown Noise</span>
+                </button>
+                <button class="preset-chip" data-preset="lofi">
+                  <span>🎹 Lo-Fi Chords</span>
+                </button>
+                <button class="preset-chip" data-preset="rain">
+                  <span>🌧️ Rain & Storm</span>
+                </button>
+                <button class="preset-chip" data-preset="pink">
+                  <span>🌊 Nature Pink</span>
+                </button>
+                <button class="preset-chip" data-preset="binaural_gamma">
+                  <span>⚡ 40Hz Gamma</span>
+                </button>
+                <button class="preset-chip" data-preset="binaural_beta">
+                  <span>🧠 14Hz Beta</span>
+                </button>
+                <button class="preset-chip btn-custom-music-chip" id="btn-open-custom-music" title="Manage 100% Private Local Audio">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"></path></svg>
+                  <span>Custom (Private)</span>
+                  <span class="custom-badge-pill" id="custom-track-count-badge">0</span>
+                </button>
+              </div>
+
+              <!-- Volume Slider & Visualizer -->
+              <div class="audio-slider-row">
+                <div class="volume-container">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon></svg>
+                  <input type="range" class="volume-slider" id="audio-volume-slider" min="0" max="1" step="0.01" value="0.6" />
+                </div>
+                <canvas id="audio-visualizer-canvas" class="visualizer-canvas" width="90" height="20"></canvas>
+              </div>
+            </div>
+
+            <!-- 2. Study Squads & Leaderboard Card -->
+            <div class="floating-card">
+              <div class="card-header-row">
+                <div class="card-title-group">
+                  <div class="card-title-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                  </div>
+                  <div>
+                    <h2 class="card-title">Study Squad</h2>
+                    <div class="card-subtitle">
+                      <span id="squad-banner-name">Personal Space</span> •
+                      <span class="room-code-badge" id="squad-room-code-badge" title="Squad status">Solo</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button class="btn-secondary btn-sm" id="btn-open-squad-modal" style="padding: 0.35rem 0.75rem;">
+                  <span id="squad-open-modal-text">Join / Create</span>
+                </button>
+              </div>
+
+              <!-- Live Member Presence Avatars -->
+              <div style="margin-bottom: 1.25rem;">
+                <div class="section-title-row" style="margin-bottom: 0.5rem;">
+                  <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim);">Live Presence</span>
+                  <span style="font-size: 0.74rem; color: var(--accent-emerald); font-weight: 700;">● Active Now</span>
+                </div>
+                <div class="presence-grid" id="squad-presence-cards-grid">
+                  <!-- Populated by squad-engine.js -->
+                </div>
+              </div>
+
+              <!-- Weekly Competition Leaderboard Table -->
+              <div>
+                <div class="section-title-row" style="margin-bottom: 0.5rem;">
+                  <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim);">Leaderboard</span>
+                  <div class="leaderboard-filters" id="leaderboard-filters-bar">
+                    <button class="lb-filter-btn active" data-filter="today">Today</button>
+                    <button class="lb-filter-btn" data-filter="week">Week</button>
+                    <button class="lb-filter-btn" data-filter="all">All</button>
+                  </div>
+                </div>
+                <div class="leaderboard-list" id="squad-leaderboard-list">
+                  <!-- Populated by squad-engine.js -->
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- ─────────────────────────────────────────────────────────────
+               CENTER COLUMN: MAIN FOCUS HUB
+               ───────────────────────────────────────────────────────────── -->
+          <div class="dashboard-col">
+            
+            <!-- 1. Header: Greeting, Streak Badge & Status Bar Aesthetic -->
+            <div class="center-header-bar">
+              <div class="user-greeting-box">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" alt="Profile" class="user-avatar-circle" id="user-profile-avatar" style="cursor: pointer;" title="Click to view profile or sign in" />
+                <div>
+                  <h1 class="greeting-name" id="user-greeting-heading">Welcome Back!</h1>
+                  <p class="greeting-sub">Ready to enter your personal focus flow?</p>
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div class="streak-pill-badge" id="center-streak-badge">
+                  <span>🔥</span>
+                  <span id="stat-streak-val">7 Days Streak</span>
+                </div>
+                <div class="status-bar-pill" id="device-status-time" title="Status Bar Time">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  <span id="status-clock-text">9:41 AM</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Key Metrics Cards Row -->
+            <div class="key-metrics-row">
+              <!-- Metric 1: Today's Focus Time with Progress Ring -->
+              <div class="metric-mini-card">
+                <div class="metric-ring-wrap">
+                  <svg viewBox="0 0 36 36">
+                    <path class="ring-bg" stroke-width="3.5" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" />
+                    <path stroke-dasharray="46, 100" stroke-width="3.5" stroke-linecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="url(#timerGradient)" />
+                  </svg>
+                  <span class="metric-ring-center-icon">🎯</span>
+                </div>
+                <div class="metric-details">
+                  <span class="metric-label">Today's Focus</span>
+                  <span class="metric-val" id="stat-today-val">2.3h / 5h</span>
+                  <span class="metric-sub" id="stat-today-sub">46% of goal clocked</span>
+                </div>
+              </div>
+
+              <!-- Metric 2: Tasks & Sessions Completed -->
+              <div class="metric-mini-card">
+                <div class="metric-ring-wrap">
+                  <svg viewBox="0 0 36 36">
+                    <path class="ring-bg" stroke-width="3.5" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" />
+                    <path stroke-dasharray="75, 100" stroke-width="3.5" stroke-linecap="round" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" />
+                  </svg>
+                  <span class="metric-ring-center-icon">✅</span>
+                </div>
+                <div class="metric-details">
+                  <span class="metric-label">Completed Sessions</span>
+                  <span class="metric-val" id="stat-sessions-val">16</span>
+                  <span class="metric-sub" style="color: var(--accent-violet);">Avg 48m per session</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Focus Timer Card -->
+            <div class="timer-display-card" id="timer-display-card">
+              <div class="timer-halo"></div>
+
+              <!-- Mode Switcher Pill -->
+              <div class="timer-mode-switcher" style="margin-bottom: 0.85rem; z-index: 2;">
+                <button class="mode-toggle-btn active" id="mode-pomo-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  <span>Pomodoro</span>
+                </button>
+                <button class="mode-toggle-btn" id="mode-stopwatch-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2 2"></path><path d="M5 3 2 6"></path><path d="m22 6-3-3"></path><path d="M12 2v2"></path></svg>
+                  <span>Stopwatch</span>
+                </button>
+              </div>
+
+              <!-- Pomodoro Sub-phases -->
+              <div class="pomo-phases" id="pomo-phases-bar" style="margin-bottom: 1rem; z-index: 2;">
+                <button class="phase-pill active" id="phase-work-btn">Focus (25m)</button>
+                <button class="phase-pill" id="phase-short-btn">Short Break (5m)</button>
+                <button class="phase-pill" id="phase-long-btn">Long Break (15m)</button>
+              </div>
+
+              <!-- Circular Clock Ring -->
+              <div class="timer-ring-wrapper">
+                <svg class="timer-ring-svg" viewBox="0 0 340 340">
+                  <defs>
+                    <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#7c3aed" />
+                      <stop offset="100%" stop-color="#6366f1" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="ring-bg" cx="170" cy="170" r="150"></circle>
+                  <circle class="ring-progress" id="timer-progress-ring" cx="170" cy="170" r="150"></circle>
+                </svg>
+
+                <!-- Central Clock Info -->
+                <div class="timer-center-info">
+                  <!-- Task Goal Selector Pill -->
+                  <div class="active-task-pill" id="active-task-pill" title="Click to edit task goal">
+                    <span class="active-tag-badge">#Coding</span>
+                    <span style="max-width: 150px; overflow:hidden; text-overflow:ellipsis;">Developing FlowState Web App</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </div>
+
+                  <div class="timer-clock" id="timer-clock-display">25:00</div>
+
+                  <div class="timer-sublabel" id="timer-sublabel-text">
+                    <span class="status-dot"></span>
+                    <span>Deep Focus Session</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Timer Controls Bar -->
+              <div class="timer-controls-bar">
+                <button class="btn-timer-secondary" id="btn-timer-reset" title="Reset Session [R]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                </button>
+
+                <button class="btn-timer-primary" id="btn-timer-play" title="Start/Pause [Space]">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </button>
+
+                <button class="btn-timer-secondary" id="btn-timer-skip" title="Skip Phase">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+                </button>
+
+                <button class="btn-timer-secondary" id="btn-timer-fullscreen" title="Distraction-Free Zen Mode [F]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                </button>
+              </div>
+
+              <!-- Integrated "Work Done Summary" Reflection Field -->
+              <div class="timer-reflection-box">
+                <div class="timer-reflection-header">
+                  <span class="timer-reflection-label">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    <span>Work Done Summary</span>
+                  </span>
+                  <button class="btn-log-session" id="btn-direct-log-session" title="Complete and log this focus session">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Finish & Log</span>
+                  </button>
+                </div>
+                <textarea class="timer-reflection-input" id="timer-quick-reflection" rows="2" placeholder="Brief notes on what you achieved during this focus block..."></textarea>
+              </div>
+
+              <!-- Hotkey Hints -->
+              <div class="hotkey-hints">
+                <span><span class="hotkey-badge">Space</span> Start/Pause</span>
+                <span><span class="hotkey-badge">R</span> Reset</span>
+                <span><span class="hotkey-badge">F</span> Zen Fullscreen</span>
+                <span><span class="hotkey-badge">D</span> Deep Focus</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ─────────────────────────────────────────────────────────────
+               RIGHT COLUMN: SCHEDULE & OFFLINE CONTROLS
+               ───────────────────────────────────────────────────────────── -->
+          <div class="dashboard-col">
+            
+            <!-- 1. Focus Schedule & Log Card -->
+            <div class="floating-card schedule-card">
+              <div class="card-header-row">
+                <div class="card-title-group">
+                  <div class="card-title-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  </div>
+                  <div>
+                    <h2 class="card-title">Focus Schedule</h2>
+                    <div class="card-subtitle" id="current-calendar-month-text">September 2026</div>
+                  </div>
+                </div>
+
+                <span style="font-size: 0.74rem; font-weight: 700; color: var(--accent-violet);">Today</span>
+              </div>
+
+              <!-- Calendar Week Strip (Sat to Fri dates) -->
+              <div class="calendar-week-strip" id="calendar-week-strip">
+                <button class="calendar-day-btn" data-day="Sat" data-date="29">
+                  <span class="day-name">Sat</span>
+                  <span class="day-num">29</span>
+                </button>
+                <button class="calendar-day-btn" data-day="Sun" data-date="30">
+                  <span class="day-name">Sun</span>
+                  <span class="day-num">30</span>
+                </button>
+                <button class="calendar-day-btn" data-day="Mon" data-date="31">
+                  <span class="day-name">Mon</span>
+                  <span class="day-num">31</span>
+                </button>
+                <button class="calendar-day-btn" data-day="Tue" data-date="1">
+                  <span class="day-name">Tue</span>
+                  <span class="day-num">1</span>
+                </button>
+                <button class="calendar-day-btn" data-day="Wed" data-date="2">
+                  <span class="day-name">Wed</span>
+                  <span class="day-num">2</span>
+                </button>
+                <button class="calendar-day-btn" data-day="Thu" data-date="3">
+                  <span class="day-name">Thu</span>
+                  <span class="day-num">3</span>
+                </button>
+                <button class="calendar-day-btn active has-event" data-day="Fri" data-date="4">
+                  <span class="day-name">Fri</span>
+                  <span class="day-num">4</span>
+                </button>
+              </div>
+
+              <!-- Interactive Timeline with Logged Study Sessions -->
+              <div>
+                <div class="section-title-row" style="margin-bottom: 0.65rem;">
+                  <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim);">Session Timeline</span>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Logged Today</span>
+                </div>
+
+                <div class="timeline-container" id="schedule-timeline-container">
+                  <!-- Dynamically populated / Default sessions -->
+                  <div class="timeline-item">
+                    <div class="timeline-track-col">
+                      <div class="timeline-dot dot-cyan"></div>
+                      <div class="timeline-line"></div>
+                    </div>
+                    <div class="timeline-content-card">
+                      <div class="timeline-meta-row">
+                        <span class="timeline-time-badge">11:00 AM</span>
+                        <span class="timeline-duration-badge">45m</span>
+                      </div>
+                      <div class="timeline-task-title">
+                        <span class="timeline-tag-pill">#FinancialLiteracy</span>
+                        <span>Portfolio Allocation & Risk Models</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="timeline-item">
+                    <div class="timeline-track-col">
+                      <div class="timeline-dot dot-emerald"></div>
+                      <div class="timeline-line"></div>
+                    </div>
+                    <div class="timeline-content-card">
+                      <div class="timeline-meta-row">
+                        <span class="timeline-time-badge">01:30 PM</span>
+                        <span class="timeline-duration-badge">50m</span>
+                      </div>
+                      <div class="timeline-task-title">
+                        <span class="timeline-tag-pill">#Coding</span>
+                        <span>Architecting Supabase Realtime</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="timeline-item">
+                    <div class="timeline-track-col">
+                      <div class="timeline-dot"></div>
+                    </div>
+                    <div class="timeline-content-card">
+                      <div class="timeline-meta-row">
+                        <span class="timeline-time-badge">03:45 PM</span>
+                        <span class="timeline-duration-badge">30m</span>
+                      </div>
+                      <div class="timeline-task-title">
+                        <span class="timeline-tag-pill">#Design</span>
+                        <span>Soft Pastel UI System & Components</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- 2. Offline Deep Focus Widget & Sync Queue Engine -->
+            <div class="floating-card" style="display: flex; flex-direction: column; gap: 1rem;">
+              <div class="card-header-row" style="margin-bottom: 0;">
+                <div class="card-title-group">
+                  <div class="card-title-icon" id="offline-focus-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  </div>
+                  <div>
+                    <h2 class="card-title" id="offline-focus-title">Offline Deep Focus</h2>
+                    <div class="card-subtitle" id="offline-focus-sub">Distraction shield off — Squad feeds live</div>
+                  </div>
+                </div>
+
+                <label class="toggle-switch" id="offline-focus-toggle-label" title="Toggle Offline Deep Focus Mode">
+                  <input type="checkbox" id="offline-focus-toggle" aria-label="Toggle Offline Deep Focus Mode" />
+                  <span class="toggle-track">
+                    <span class="toggle-thumb"></span>
+                  </span>
+                </label>
+              </div>
+
+              <!-- Sync Queue Status Bar -->
+              <div class="sync-queue-bar" id="sync-queue-bar" style="display: none; flex-direction: column; align-items: stretch; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                  <div style="display: flex; align-items: center; gap: 0.45rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 .49-3.51"></path></svg>
+                    <span id="sync-queue-text">0 sessions queued for sync</span>
+                  </div>
+                  <button class="btn-sync-now" id="btn-sync-now" title="Sync now to Supabase">Sync Now</button>
+                </div>
+                <div class="sync-progress-bar-wrap" id="sync-progress-bar-wrap">
+                  <div class="sync-progress-bar" id="sync-progress-bar"></div>
+                </div>
+              </div>
+
+              <div style="font-size: 0.74rem; color: var(--text-dim); line-height: 1.4;">
+                🛡️ Silences multiplayer feeds and queues logs locally until reconnect.
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           VIEW 2: MULTIPLAYER STUDY SQUAD & COMPETITIONS (DEEP DIVE VIEW)
+           =================================================================== -->
+      <section id="view-squad" class="view-section">
+        <!-- Distraction Shield Overlay (shown in Deep Focus mode) -->
+        <div class="distraction-shield" id="distraction-shield">
+          <div class="shield-inner">
+            <div class="shield-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <h2 class="shield-title">Offline Deep Focus Active</h2>
+            <p class="shield-sub">Squad feeds, leaderboards & live nudges are silenced.<br>Your timer, audio & local tasks are running normally.</p>
+            <button class="btn-shield-disable" id="btn-disable-shield">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Disable Shield & Reconnect
+            </button>
+          </div>
+        </div>
+
+        <!-- Squad Banner -->
+        <div class="squad-banner">
+          <div class="squad-title-box">
+            <div class="squad-badge-icon" id="squad-banner-icon">⚡</div>
+            <div>
+              <h1 class="squad-name" id="squad-deep-view-name">Personal Space</h1>
+              <div class="squad-meta-row">
+                <span>Room Code:</span>
+                <span class="room-code-badge" id="squad-deep-code-badge">Solo Mode</span>
+                <span id="squad-deep-members-count">• Private Focus</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Squad Main Layout Grid -->
+        <div class="squad-layout-grid">
+          <div>
+            <!-- Group Challenges -->
+            <div class="floating-card" style="margin-bottom: 1.5rem;">
+              <div class="section-title-row">
+                <h2 class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-violet)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  <span>Team Challenges & Sprints</span>
+                </h2>
+              </div>
+              <div class="challenges-container" id="squad-challenges-container">
+                <!-- Populated by squad-engine.js -->
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <!-- Activity Stream -->
+            <div class="floating-card">
+              <div class="section-title-row">
+                <h2 class="section-title">
+                  <span>⚡ Activity Stream</span>
+                </h2>
+                <span style="font-size: 0.75rem; color: var(--text-dim);">Recent Finishes</span>
+              </div>
+              <div class="activity-feed-list" id="squad-activity-feed-list">
+                <!-- Populated by squad-engine.js -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           VIEW 3: ANALYTICS & LOGS DASHBOARD
+           =================================================================== -->
+      <section id="view-analytics" class="view-section">
+        <div class="analytics-container">
+          
+          <!-- Stat Cards Row -->
+          <div class="stats-overview-grid">
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-cyan">🎯</div>
+              <div class="stat-meta">
+                <span class="stat-label">Daily Goal Focus</span>
+                <span class="stat-value">2.3h / 5h</span>
+                <span class="stat-subtext">46% of target clocked</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-amber">🔥</div>
+              <div class="stat-meta">
+                <span class="stat-label">Current Streak</span>
+                <span class="stat-value">7 Days</span>
+                <span class="stat-subtext">Consistently in flow state</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-violet">⏱️</div>
+              <div class="stat-meta">
+                <span class="stat-label">Lifetime Deep Work</span>
+                <span class="stat-value" id="stat-total-val">50.6h</span>
+                <span class="stat-subtext">All verified sessions</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-emerald">📚</div>
+              <div class="stat-meta">
+                <span class="stat-label">Completed Sessions</span>
+                <span class="stat-value">16</span>
+                <span class="stat-subtext">Avg 48m per session</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="charts-grid">
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Weekly Focus Distribution</h3>
+                <span style="font-size: 0.8rem; color: var(--text-dim);">Last 7 Days (Hours)</span>
+              </div>
+              <div class="chart-canvas-wrapper" id="weekly-bar-chart-container">
+                <!-- SVG injected by analytics-engine.js -->
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <h3 class="chart-title">Focus by Category</h3>
+                <span style="font-size: 0.8rem; color: var(--text-dim);">Tags %</span>
+              </div>
+              <div class="chart-canvas-wrapper" id="donut-chart-container">
+                <!-- SVG injected by analytics-engine.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Time Logs & History Table -->
+          <div class="logs-section-card">
+            <div class="logs-toolbar">
+              <div class="search-filter-group">
+                <input type="text" id="table-search-input" class="table-search-input" placeholder="Search sessions or task notes..." />
+                <select id="table-tag-filter" class="tag-select-filter">
+                  <option value="ALL">All Tags</option>
+                  <option value="#Coding">#Coding</option>
+                  <option value="#Math">#Math</option>
+                  <option value="#Reading">#Reading</option>
+                  <option value="#Writing">#Writing</option>
+                  <option value="#Design">#Design</option>
+                  <option value="#Research">#Research</option>
+                </select>
+              </div>
+
+              <div class="export-actions">
+                <button class="btn-export" id="btn-export-csv" title="Export session history as CSV">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  <span>Export CSV</span>
+                </button>
+                <button class="btn-export" id="btn-export-json" title="Export raw JSON data">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  <span>JSON</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="logs-table-wrapper">
+              <table class="logs-table">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Task Target</th>
+                    <th>Category</th>
+                    <th>Duration</th>
+                    <th>Completed Work</th>
+                    <th>Rating</th>
+                    <th style="text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="history-table-body">
+                  <!-- Dynamically populated by analytics-engine.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ===================================================================
+         DISTRACTION-FREE FULL-SCREEN FOCUS MODE
+         =================================================================== -->
+    <div id="fullscreen-focus-view">
+      <div class="fs-aura-center"></div>
+
+      <div class="fs-clock" id="fs-clock-display">25:00</div>
+
+      <div class="fs-task">
+        <span class="fs-tag" id="fs-active-tag-badge">#Coding</span>
+        <span id="fs-active-task-text">Developing FlowState Web App</span>
+      </div>
+
+      <button class="fs-exit-hint" id="fs-exit-button">
+        Press <span class="hotkey-badge">Esc</span> or Click to Exit Fullscreen Focus
+      </button>
+    </div>
+
+    <!-- ===================================================================
+         MODALS
+         =================================================================== -->
+
+    <!-- Pre-Session Goal Modal -->
+    <div class="modal-overlay" id="pre-session-modal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">Set Session Intent</h3>
+          <button class="modal-close" id="btn-close-pre-modal">&times;</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pre-task-input">What are you focusing on?</label>
+          <input type="text" id="pre-task-input" class="form-input" placeholder="e.g. Build authentication middleware, Read Ch. 4..." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category Tag</label>
+          <div class="tag-pills" id="pre-tag-pills">
+            <span class="tag-pill active" data-tag="#Coding">#Coding</span>
+            <span class="tag-pill" data-tag="#Math">#Math</span>
+            <span class="tag-pill" data-tag="#Writing">#Writing</span>
+            <span class="tag-pill" data-tag="#Reading">#Reading</span>
+            <span class="tag-pill" data-tag="#Design">#Design</span>
+            <span class="tag-pill" data-tag="#Research">#Research</span>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+          <button class="btn-primary" id="btn-save-pre-task">Save Target & Focus</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post-Session Reflection Modal -->
+    <div class="modal-overlay" id="post-session-modal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">Session Completed! 🎉</h3>
+          <button class="modal-close" id="btn-close-post-modal">&times;</button>
+        </div>
+        <div style="margin-bottom: 1.25rem;">
+          <div id="post-session-task-title" style="font-weight: 800; color: var(--text-heading); font-size: 1.15rem;">#Coding • Task</div>
+          <div style="color: var(--accent-violet); font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; margin-top: 2px;" id="post-session-duration">25 minutes</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="post-reflection-input">Summary of Work Done</label>
+          <textarea id="post-reflection-input" class="form-textarea" rows="3" placeholder="e.g. Closed PR #24, reviewed 15 pages, fixed the cache invalidation bug..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Focus & Productivity Rating</label>
+          <div style="display: flex; gap: 0.5rem; font-size: 1.8rem; cursor: pointer; color: #f59e0b;">
+            <span class="star-rating-btn" data-value="1">★</span>
+            <span class="star-rating-btn" data-value="2">★</span>
+            <span class="star-rating-btn" data-value="3">★</span>
+            <span class="star-rating-btn" data-value="4">★</span>
+            <span class="star-rating-btn" data-value="5">★</span>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+          <button class="btn-secondary" id="btn-discard-post-session">Discard</button>
+          <button class="btn-primary" id="btn-save-post-session">Log Focus Session</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Squad Manage Modal (Create / Join) -->
+    <div class="modal-overlay" id="squad-manage-modal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">Study Squad Hub</h3>
+          <button class="modal-close" id="btn-close-squad-modal">&times;</button>
+        </div>
+
+        <!-- Current Status Banner -->
+        <div id="squad-current-status-box" style="padding: 0.85rem 1rem; border-radius: 0.85rem; background: rgba(243, 244, 246, 0.7); border: 1px solid #E5E7EB; margin-bottom: 1.25rem;">
+          <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.25rem;">Current Mode</div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;">
+            <div>
+              <div id="squad-status-mode-title" style="font-weight: 700; color: #1E1B4B; font-size: 0.92rem;">🧘 Personal Space (Solo)</div>
+              <div id="squad-status-mode-sub" style="font-size: 0.76rem; color: #64748B;">Private focus space • No multiplayer distractions</div>
+            </div>
+            <button class="btn-secondary btn-sm" id="btn-leave-squad-action" style="display: none; color: #DC2626; border-color: #FCA5A5; font-size: 0.75rem; white-space: nowrap;">
+              Leave Squad
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Create New Study Squad</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="input-new-squad-name" class="form-input" placeholder="e.g. Stanford AI Lab, Night Owls" />
+            <button class="btn-primary" id="btn-create-squad-action" style="white-space: nowrap;">Create</button>
+          </div>
+        </div>
+        <div style="text-align: center; color: var(--text-dim); margin: 1rem 0; font-size: 0.8rem; font-weight: 700;">— OR JOIN BY CODE —</div>
+        <div class="form-group">
+          <label class="form-label">Enter Room Code</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="input-join-squad-code" class="form-input" placeholder="e.g. FLOW-7749" style="text-transform: uppercase;" />
+            <button class="btn-secondary" id="btn-join-squad-action" style="white-space: nowrap;">Join</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Supabase Cloud Sync Modal -->
+    <div class="modal-overlay" id="supabase-sync-modal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">Supabase Database & Realtime Sync</h3>
+          <button class="modal-close" id="btn-close-supabase-modal">&times;</button>
+        </div>
+        <div style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5;">
+          Connect your free Supabase project to push focus sessions to PostgreSQL and subscribe to live multiplayer presence channels.
+          <div style="margin-top: 0.5rem;" id="supabase-status-indicator">
+            <span style="color: var(--accent-violet); font-weight: 700;">● Local Fallback Mode (Active)</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="input-supabase-url">Supabase Project URL</label>
+          <input type="text" id="input-supabase-url" class="form-input" value="https://ntybhertbxnibbrgncuj.supabase.co" placeholder="https://your-project.supabase.co" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="input-supabase-key">Supabase Anon (Public) Key</label>
+          <input type="password" id="input-supabase-key" class="form-input" value="sb_publishable_NavP4oysvqn0fng1venY8Q_SUQhSxd5" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+          <button class="btn-danger" id="btn-disconnect-supabase">Use Offline Mode</button>
+          <button class="btn-primary" id="btn-test-supabase">Connect & Sync</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zero-Knowledge Custom Music Manager Modal -->
+    <div class="modal-overlay" id="custom-music-modal">
+      <div class="modal-box modal-box-large">
+        <div class="modal-header">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div class="privacy-shield-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <div>
+              <h3 class="modal-title">Private Audio Vault</h3>
+              <span class="privacy-subtitle">100% Client-Side • Stored in IndexedDB • Zero Cloud Uploads</span>
+            </div>
+          </div>
+          <button class="modal-close" id="btn-close-custom-music-modal">&times;</button>
+        </div>
+
+        <!-- Storage Meter Card -->
+        <div class="storage-meter-card" id="custom-storage-meter-card">
+          <div class="storage-meter-header">
+            <span class="storage-label">Local Browser Storage</span>
+            <span class="storage-stat" id="custom-storage-stat-text">0 tracks • 0.0 MB</span>
+          </div>
+          <div class="storage-progress-track">
+            <div class="storage-progress-bar" id="custom-storage-bar" style="width: 0%;"></div>
+          </div>
+          <div class="storage-meter-note" id="custom-storage-quota-text">Quota usage: Safe • Data never leaves this device</div>
+        </div>
+
+        <!-- Dual Mode Input: Upload Local File OR External Stream -->
+        <div class="custom-input-section">
+          <div class="audio-dropzone" id="audio-dropzone">
+            <input type="file" id="audio-file-input" accept=".mp3,.wav,.ogg,.flac,.m4a,audio/*" multiple style="display: none;" />
+            <div class="dropzone-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </div>
+            <div class="dropzone-title">Drag & Drop Audio Files Here</div>
+            <div class="dropzone-sub">Supports .mp3, .wav, .ogg, .flac, .m4a</div>
+            <button class="btn-secondary btn-sm" id="btn-browse-audio-files" style="margin-top: 0.5rem;">Browse Local Files</button>
+          </div>
+
+          <div class="stream-input-card">
+            <div class="stream-card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>
+              <span>Add Web Audio Stream URL</span>
+            </div>
+            <div class="stream-inputs-row">
+              <input type="text" id="input-stream-name" class="form-input" placeholder="Stream Title (e.g. Lofi Station)" style="flex: 1;" />
+              <input type="url" id="input-stream-url" class="form-input" placeholder="https://stream-url.mp3" style="flex: 1.5;" />
+              <button class="btn-primary btn-sm" id="btn-add-stream-track" style="white-space: nowrap;">Add Stream</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="custom-playlist-header">
+          <h4>My Private Library</h4>
+          <span class="playlist-counter" id="playlist-count-badge">0 tracks</span>
+        </div>
+
+        <div class="custom-tracks-list" id="custom-tracks-list">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Shortcuts & Guide Modal -->
+    <div class="modal-overlay" id="shortcuts-help-modal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">Keyboard Shortcuts & Guide</h3>
+          <button class="modal-close" id="btn-close-help-modal">&times;</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>Start / Pause Timer</span>
+            <span class="hotkey-badge">Space</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Reset Timer</span>
+            <span class="hotkey-badge">R</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Toggle Fullscreen Focus Mode</span>
+            <span class="hotkey-badge">F</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Mute / Unmute Focus Audio</span>
+            <span class="hotkey-badge">M</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Toggle Offline Deep Focus Shield</span>
+            <span class="hotkey-badge">D</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Exit Fullscreen / Close Modals</span>
+            <span class="hotkey-badge">Esc</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================
+         SUPABASE AUTHENTICATION & USER PROFILE MODAL
+         =================================================================== -->
+    <div class="modal-overlay" id="auth-modal">
+      <div class="modal-box" style="max-width: 440px;">
+        <div class="modal-header">
+          <h3 class="modal-title" id="auth-modal-title">Sign In to FlowState</h3>
+          <button class="modal-close" id="btn-close-auth-modal">&times;</button>
+        </div>
+
+        <!-- Alert Message Box -->
+        <div id="auth-alert-message" class="auth-alert" style="display: none;"></div>
+
+        <!-- 1. GUEST / NOT LOGGED IN VIEW -->
+        <div id="auth-guest-view">
+          <!-- Tabs (Sign In / Create Account) -->
+          <div class="auth-tabs">
+            <button class="auth-tab-btn active" id="auth-tab-signin" type="button">Sign In</button>
+            <button class="auth-tab-btn" id="auth-tab-signup" type="button">Create Account</button>
+          </div>
+
+          <form id="auth-form">
+            <!-- Name field (shown on Sign Up tab) -->
+            <div class="form-group" id="auth-name-group" style="display: none;">
+              <label class="form-label" for="auth-input-name">Your Full Name</label>
+              <input type="text" id="auth-input-name" class="form-input" placeholder="e.g. Alex Morgan" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="auth-input-email">Email Address</label>
+              <input type="email" id="auth-input-email" class="form-input" placeholder="you@example.com" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="auth-input-password">Password</label>
+              <input type="password" id="auth-input-password" class="form-input" placeholder="At least 6 characters" minlength="6" required />
+            </div>
+
+            <button type="submit" class="btn-primary" id="btn-auth-submit" style="width: 100%; margin-top: 0.5rem;">
+              Sign In
+            </button>
+
+            <div style="text-align: center; margin-top: 1rem;">
+              <button type="button" class="link-btn" id="btn-continue-guest" style="background: none; border: none; font-size: 0.82rem; color: var(--text-muted); cursor: pointer; text-decoration: underline;">
+                Continue as Guest (Offline Local Mode)
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 2. AUTHENTICATED / LOGGED IN VIEW -->
+        <div id="auth-profile-view" style="display: none;">
+          <div class="profile-card-inner">
+            <img src="" alt="Profile Avatar" class="profile-large-avatar" id="auth-profile-avatar-img" />
+            <h4 class="profile-user-name" id="auth-profile-name">Focus User</h4>
+            <span class="profile-user-email" id="auth-profile-email">user@flowstate.local</span>
+            <div class="profile-badge">⚡ Supabase Cloud Sync Active</div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+            <button type="button" class="btn-danger" id="btn-auth-signout" style="width: 100%;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+
+  <!-- PWA Service Worker Registration & Lifecycle Management -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', async () => {
+        try {
+          const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+          console.log('✅ FlowState Service Worker registered, scope:', reg.scope);
+
+          if ('sync' in reg) {
+            try {
+              await reg.sync.register('flowstate-offline-sync');
+              console.log('🔄 Background Sync registered');
+            } catch (syncErr) {
+              console.warn('Background sync registration notice:', syncErr.message);
+            }
+          }
+
+          const swBanner = document.getElementById('sw-update-banner');
+          const reloadBtn = document.getElementById('btn-sw-reload');
+          const dismissBtn = document.getElementById('btn-sw-dismiss');
+
+          let newWorker = null;
+          function showUpdateBar(worker) {
+            newWorker = worker;
+            if (swBanner) swBanner.classList.add('visible');
+          }
+
+          if (reg.waiting) showUpdateBar(reg.waiting);
+
+          reg.addEventListener('updatefound', () => {
+            const installing = reg.installing;
+            if (!installing) return;
+            installing.addEventListener('statechange', () => {
+              if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+                showUpdateBar(installing);
+              }
+            });
+          });
+
+          reloadBtn?.addEventListener('click', () => {
+            if (newWorker) newWorker.postMessage({ type: 'SKIP_WAITING' });
+            if (swBanner) swBanner.classList.remove('visible');
+            window.location.reload();
+          });
+
+          dismissBtn?.addEventListener('click', () => {
+            if (swBanner) swBanner.classList.remove('visible');
+          });
+
+          let refreshing = false;
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) {
+              refreshing = true;
+              window.location.reload();
+            }
+          });
+        } catch (err) {
+          console.warn('Service Worker registration skipped:', err.message);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

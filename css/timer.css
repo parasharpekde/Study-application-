@@ -1,0 +1,643 @@
+/* ==========================================================================
+   FlowState - Timer & Stopwatch Styles (Light Pastel Aesthetic)
+   ========================================================================== */
+
+.timer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+  gap: 1.25rem;
+}
+
+/* Mode Switcher Pill (Pomodoro vs Flow Stopwatch) */
+.timer-mode-switcher {
+  display: flex;
+  background: rgba(241, 245, 249, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 0.35rem;
+  border-radius: var(--radius-full);
+  gap: 0.35rem;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.05);
+}
+
+.mode-toggle-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.45rem 1.15rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all var(--transition-fast);
+}
+
+.mode-toggle-btn:hover {
+  color: var(--text-heading);
+}
+
+.mode-toggle-btn.active {
+  background: #ffffff;
+  color: var(--accent-violet);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+}
+
+/* Pomodoro Sub-phases (Focus, Short Break, Long Break) */
+.pomo-phases {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.phase-pill {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35rem 0.95rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all var(--transition-fast);
+}
+
+.phase-pill:hover {
+  border-color: var(--accent-violet-border);
+  color: var(--accent-violet);
+}
+
+.phase-pill.active {
+  border-color: var(--accent-violet);
+  background: var(--accent-violet-bg);
+  color: var(--accent-violet);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.12);
+}
+
+.phase-pill.break-active {
+  border-color: var(--accent-amber);
+  background: var(--accent-amber-bg);
+  color: var(--accent-amber);
+}
+
+/* Main Focus Timer Card & Progress Ring */
+.timer-display-card {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.25rem 1.75rem 2rem;
+  background: var(--surface-card);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast);
+}
+
+.timer-display-card:hover {
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* Soft Ambient Violet Halo behind Clock Ring */
+.timer-halo {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196, 181, 253, 0.45) 0%, rgba(221, 214, 254, 0.15) 50%, transparent 70%);
+  filter: blur(35px);
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.timer-running .timer-halo {
+  opacity: 1;
+  animation: pulsePastelHalo 4s ease-in-out infinite alternate;
+}
+
+@keyframes pulsePastelHalo {
+  0% { transform: scale(0.96); opacity: 0.6; }
+  100% { transform: scale(1.12); opacity: 0.95; }
+}
+
+/* SVG Circular Progress Ring */
+.timer-ring-wrapper {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-bg {
+  stroke: #f1f5f9;
+  stroke-width: 12;
+  fill: transparent;
+}
+
+.ring-progress {
+  stroke: url(#timerGradient);
+  stroke-width: 12;
+  stroke-linecap: round;
+  fill: transparent;
+  stroke-dasharray: 942; /* 2 * PI * 150 */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.35s linear;
+  filter: drop-shadow(0 4px 10px rgba(124, 58, 237, 0.25));
+}
+
+/* Inner Timer Center Info */
+.timer-center-info {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 2;
+}
+
+.active-task-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.95rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-main);
+  max-width: 230px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  transition: all var(--transition-fast);
+}
+
+.active-task-pill:hover {
+  background: var(--accent-violet-bg);
+  border-color: var(--accent-violet-border);
+  color: var(--accent-violet);
+  transform: translateY(-1px);
+}
+
+.active-tag-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--accent-violet);
+}
+
+.timer-clock {
+  font-family: var(--font-mono);
+  font-size: 4.2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text-heading);
+  line-height: 1;
+}
+
+.timer-sublabel {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+
+.timer-running .status-dot {
+  background: var(--accent-emerald);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+/* Controls Action Bar */
+.timer-controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.6rem;
+  z-index: 2;
+}
+
+.btn-timer-primary {
+  background: linear-gradient(135deg, var(--accent-violet) 0%, var(--accent-indigo) 100%);
+  border: none;
+  outline: none;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
+  color: #ffffff;
+  transition: all var(--transition-fast);
+}
+
+.btn-timer-primary:hover {
+  transform: scale(1.06);
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.48);
+}
+
+.btn-timer-primary:active {
+  transform: scale(0.96);
+}
+
+.btn-timer-primary svg {
+  width: 26px;
+  height: 26px;
+}
+
+.btn-timer-secondary {
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  transition: all var(--transition-fast);
+}
+
+.btn-timer-secondary:hover {
+  color: var(--accent-violet);
+  background: #ffffff;
+  border-color: var(--accent-violet-border);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.12);
+  transform: translateY(-2px);
+}
+
+.btn-log-session {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.3rem;
+  background: var(--accent-violet-bg);
+  border: 1px solid var(--accent-violet-border);
+  color: var(--accent-violet);
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.08);
+  transition: all var(--transition-fast);
+}
+
+.btn-log-session:hover {
+  background: var(--accent-violet);
+  border-color: var(--accent-violet);
+  color: #ffffff;
+  box-shadow: var(--glow-violet);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Integrated "Work Done Summary" Reflection Box
+   ========================================================================== */
+.timer-reflection-box {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1.15rem 1.25rem;
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  transition: border-color var(--transition-fast);
+}
+
+.timer-reflection-box:focus-within {
+  background: #ffffff;
+  border-color: var(--accent-violet);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.08);
+}
+
+.timer-reflection-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timer-reflection-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.timer-reflection-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-heading);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  resize: none;
+  outline: none;
+  line-height: 1.4;
+}
+
+.timer-reflection-input::placeholder {
+  color: var(--text-dim);
+}
+
+/* Hotkey Hints Strip */
+.hotkey-hints {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   Offline Deep Focus Panel Widget
+   ========================================================================== */
+.offline-focus-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: var(--surface-card);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-3xl);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-fast);
+}
+
+.offline-focus-panel.active-shield {
+  background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);
+  border-color: var(--accent-violet-border);
+  box-shadow: 0 10px 30px -5px rgba(124, 58, 237, 0.15);
+}
+
+.offline-focus-left {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.offline-focus-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--accent-violet-bg);
+  border: 1px solid var(--accent-violet-border);
+  color: var(--accent-violet);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.active-shield .offline-focus-icon {
+  background: var(--accent-violet);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
+}
+
+.offline-focus-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.offline-focus-title {
+  font-family: var(--font-heading);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.offline-focus-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #e2e8f0;
+  border-radius: 34px;
+  transition: 0.25s;
+}
+
+.toggle-thumb {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: 0.25s;
+}
+
+input:checked + .toggle-track {
+  background-color: var(--accent-violet);
+}
+
+input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(20px);
+}
+
+/* Sync Queue Status Bar */
+.sync-queue-bar {
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  width: 100%;
+}
+
+.btn-sync-now {
+  background: var(--accent-violet);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.8rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.2);
+}
+
+.btn-sync-now:hover {
+  background: var(--accent-indigo);
+}
+
+.sync-progress-bar-wrap {
+  width: 100%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  overflow: hidden;
+  display: none;
+}
+
+.sync-progress-bar-wrap.active {
+  display: block;
+}
+
+.sync-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-violet), var(--accent-indigo));
+  transition: width 0.3s ease;
+}
+
+/* ==========================================================================
+   Distraction-Free Full-Screen Focus Mode
+   ========================================================================== */
+#fullscreen-focus-view {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: radial-gradient(circle at center, #ffffff 0%, #f5f3ff 60%, #ede9fe 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  overflow: hidden;
+}
+
+#fullscreen-focus-view.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.fs-aura-center {
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196, 181, 253, 0.5) 0%, rgba(221, 214, 254, 0.2) 45%, transparent 75%);
+  filter: blur(50px);
+  animation: fsPulsePastel 5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes fsPulsePastel {
+  0% { transform: scale(0.9); opacity: 0.5; }
+  100% { transform: scale(1.15); opacity: 0.85; }
+}
+
+.fs-clock {
+  font-family: var(--font-mono);
+  font-size: 8.5rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  letter-spacing: -0.05em;
+  line-height: 1;
+  z-index: 2;
+  user-select: none;
+}
+
+.fs-task {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 1.25rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.fs-tag {
+  background: var(--accent-violet-bg);
+  border: 1px solid var(--accent-violet-border);
+  color: var(--accent-violet);
+  padding: 0.3rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.fs-exit-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  z-index: 2;
+  background: #ffffff;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.fs-exit-hint:hover {
+  border-color: var(--accent-violet);
+  color: var(--accent-violet);
+  transform: translateY(-1px);
+}

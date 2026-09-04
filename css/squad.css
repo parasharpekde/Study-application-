@@ -1,0 +1,501 @@
+/* ==========================================================================
+   FlowState - Study Squad & Competition Styles (Light Pastel Aesthetic)
+   ========================================================================== */
+
+.squad-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.75rem;
+}
+
+@media (max-width: 980px) {
+  .squad-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Squad Header Banner */
+.squad-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background: var(--surface-card);
+  border-radius: var(--radius-3xl);
+  padding: 1.25rem 1.75rem;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.squad-title-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.squad-badge-icon {
+  font-size: 1.8rem;
+  width: 48px;
+  height: 48px;
+  background: var(--accent-violet-bg);
+  border: 1px solid var(--accent-violet-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.squad-name {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  line-height: 1.2;
+}
+
+.squad-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.room-code-badge {
+  font-family: var(--font-mono);
+  background: var(--accent-violet-bg);
+  border: 1px solid var(--accent-violet-border);
+  color: var(--accent-violet);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.room-code-badge:hover {
+  background: var(--accent-violet);
+  color: #ffffff;
+}
+
+/* Section Subheads */
+.section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* Real-Time Live Presence Cards */
+.presence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.85rem;
+}
+
+.member-presence-card {
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: all var(--transition-fast);
+}
+
+.member-presence-card:hover {
+  background: #ffffff;
+  border-color: var(--accent-violet-border);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.08);
+  transform: translateY(-2px);
+}
+
+.member-presence-card.status-deepwork {
+  border-left: 3px solid var(--accent-emerald);
+}
+.member-presence-card.status-break {
+  border-left: 3px solid var(--accent-amber);
+}
+.member-presence-card.status-idle {
+  border-left: 3px solid var(--text-dim);
+}
+
+.member-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.presence-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+.dot-deepwork {
+  background: var(--accent-emerald);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+.dot-break {
+  background: var(--accent-amber);
+}
+.dot-idle {
+  background: var(--text-dim);
+}
+
+.member-name-block {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.member-name {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member-role {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.member-task-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.member-elapsed-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--accent-emerald);
+  font-weight: 700;
+}
+
+.member-task-title {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Weekly Competition Leaderboard Table */
+.leaderboard-filters {
+  display: flex;
+  background: #f1f5f9;
+  padding: 0.25rem;
+  border-radius: var(--radius-full);
+  gap: 0.25rem;
+}
+
+.lb-filter-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.lb-filter-btn.active {
+  background: #ffffff;
+  color: var(--accent-violet);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.85rem;
+  transition: all var(--transition-fast);
+}
+
+.leaderboard-row:hover {
+  background: #ffffff;
+  border-color: var(--accent-violet-border);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+}
+
+.leaderboard-row.rank-1 {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-color: #fde68a;
+}
+.leaderboard-row.rank-2 {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-color: #e2e8f0;
+}
+.leaderboard-row.rank-3 {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border-color: #fed7aa;
+}
+
+.lb-rank-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.78rem;
+  color: var(--text-heading);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+}
+
+.lb-user-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex: 1;
+  margin-left: 0.5rem;
+}
+
+.lb-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.lb-name {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.lb-stats-val {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--accent-violet);
+}
+
+/* Team Challenges */
+.challenges-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.challenge-card {
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+}
+
+.challenge-title-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 0.4rem;
+}
+
+.challenge-progress-bar {
+  width: 100%;
+  height: 5px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+}
+
+.challenge-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-violet), var(--accent-indigo));
+}
+
+.challenge-meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Activity Feed */
+.activity-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.activity-item {
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.activity-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.activity-item-text {
+  font-size: 0.8rem;
+  color: var(--text-heading);
+}
+
+.activity-reactions-row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.reaction-btn {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 2px 7px;
+  font-size: 0.74rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all var(--transition-fast);
+}
+
+.reaction-btn:hover {
+  border-color: var(--accent-violet-border);
+  background: var(--accent-violet-bg);
+}
+
+/* ==========================================================================
+   Distraction Shield Overlay (Light Frosted Aesthetic)
+   ========================================================================== */
+.distraction-shield {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-3xl);
+  padding: 2rem;
+  text-align: center;
+}
+
+.distraction-shield.active {
+  display: flex;
+}
+
+.shield-inner {
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.shield-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--accent-violet-bg);
+  border: 1px solid var(--accent-violet-border);
+  color: var(--accent-violet);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.18);
+}
+
+.shield-title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-heading);
+}
+
+.shield-sub {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.btn-shield-disable {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-heading);
+  padding: 0.65rem 1.35rem;
+  border-radius: var(--radius-full);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--card-shadow);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+  margin-top: 0.5rem;
+}
+
+.btn-shield-disable:hover {
+  border-color: var(--accent-violet-border);
+  color: var(--accent-violet);
+  transform: translateY(-1px);
+}

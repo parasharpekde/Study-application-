@@ -1,0 +1,395 @@
+/* ==========================================================================
+   FlowState - Focus Audio & Soundscape Styles (Light Pastel Aesthetic)
+   ========================================================================== */
+
+/* Focus Soundscape Card in Left Column */
+.soundscape-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+/* Sound Presets Grid / Chips */
+.sound-presets-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.preset-chip {
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all var(--transition-fast);
+}
+
+.preset-chip:hover {
+  background: #ffffff;
+  border-color: var(--accent-violet-border);
+  color: var(--accent-violet);
+  transform: translateY(-1px);
+}
+
+.preset-chip.active {
+  background: var(--accent-violet-bg);
+  border-color: var(--accent-violet);
+  color: var(--accent-violet);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+}
+
+/* Custom Music Button Chip */
+.btn-custom-music-chip {
+  background: linear-gradient(135deg, #f5f3ff, #eef2ff);
+  border: 1px dashed var(--accent-violet-border);
+  color: var(--accent-violet);
+  font-weight: 700;
+}
+
+.btn-custom-music-chip:hover {
+  border-color: var(--accent-violet);
+  background: #ede9fe;
+}
+
+.custom-badge-pill {
+  background: var(--accent-violet);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  margin-left: 2px;
+}
+
+/* Volume Slider & Canvas Visualizer Row */
+.audio-slider-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(241, 245, 249, 0.9);
+}
+
+.volume-container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 5px;
+  background: #e2e8f0;
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--accent-violet);
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.visualizer-canvas {
+  width: 100px;
+  height: 22px;
+  border-radius: 4px;
+}
+
+/* Floating / Docked Audio Player Widget */
+.audio-player-dock {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 90;
+  width: calc(100% - 3rem);
+  max-width: 580px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--card-shadow-lg);
+  padding: 0.85rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: all var(--transition-smooth);
+}
+
+.audio-player-dock.collapsed .audio-body {
+  display: none;
+}
+
+.audio-player-dock.collapsed {
+  max-width: 360px;
+  padding: 0.65rem 1.1rem;
+}
+
+/* Audio Header / Mini Bar */
+.audio-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.audio-info-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.audio-icon-pulse {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-violet-bg);
+  border: 1px solid var(--accent-violet-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-violet);
+}
+
+.audio-playing .audio-icon-pulse {
+  animation: audioPulseLight 2s infinite ease-in-out;
+}
+
+@keyframes audioPulseLight {
+  0% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.35); }
+  70% { box-shadow: 0 0 0 9px rgba(124, 58, 237, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
+}
+
+.audio-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.audio-now-playing {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  line-height: 1.2;
+}
+
+.audio-subtitle {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+/* Header Controls Right */
+.audio-top-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-audio-mini {
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  transition: all var(--transition-fast);
+}
+
+.btn-audio-mini:hover {
+  color: var(--accent-violet);
+  background: #ffffff;
+  border-color: var(--accent-violet-border);
+}
+
+#btn-audio-play-toggle {
+  background: var(--accent-violet);
+  color: #ffffff;
+  border-color: var(--accent-violet);
+  box-shadow: 0 3px 8px rgba(124, 58, 237, 0.3);
+}
+
+#btn-audio-play-toggle:hover {
+  background: var(--accent-indigo);
+}
+
+/* ==========================================================================
+   Zero-Knowledge Custom Music Manager Modal (Light Pastel)
+   ========================================================================== */
+.privacy-shield-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-emerald-bg);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: var(--accent-emerald);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.privacy-subtitle {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--accent-emerald);
+}
+
+.storage-meter-card {
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.storage-meter-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-heading);
+}
+
+.storage-progress-track {
+  width: 100%;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.storage-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-violet), var(--accent-indigo));
+  transition: width 0.3s ease;
+}
+
+.storage-meter-note {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+
+/* Dropzone */
+.audio-dropzone {
+  background: #fdfcff;
+  border: 2px dashed var(--accent-violet-border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: 1.25rem;
+}
+
+.audio-dropzone:hover, .audio-dropzone.dragover {
+  background: #f5f3ff;
+  border-color: var(--accent-violet);
+}
+
+.dropzone-icon {
+  color: var(--accent-violet);
+  margin-bottom: 0.4rem;
+}
+
+.dropzone-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-heading);
+}
+
+.dropzone-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Stream Input Card */
+.stream-input-card {
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.stream-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 0.65rem;
+}
+
+.stream-inputs-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Playlist items */
+.custom-playlist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.custom-tracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.custom-track-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.9rem;
+  transition: all var(--transition-fast);
+}
+
+.custom-track-item:hover {
+  background: #ffffff;
+  border-color: var(--accent-violet-border);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
