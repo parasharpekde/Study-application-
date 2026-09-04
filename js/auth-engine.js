@@ -272,14 +272,15 @@ class AuthEngine {
       if (this.client) {
         await this.client.auth.signOut();
       }
-      this.handleGuestUser();
+      // Clear guest pass so auth guard redirects to login
+      sessionStorage.removeItem('flowstate_guest_pass');
       this.closeAuthModal();
-      store.emit('show_toast', {
-        type: 'info',
-        message: 'Signed out. Switched to Guest Mode.'
-      });
+      // Redirect back to login page
+      window.location.replace('login.html');
     } catch (err) {
       console.error('Sign out error:', err);
+      sessionStorage.removeItem('flowstate_guest_pass');
+      window.location.replace('login.html');
     }
   }
 

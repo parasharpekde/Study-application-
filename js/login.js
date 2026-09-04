@@ -189,6 +189,8 @@ class LoginPageController {
       }
     }));
 
+    // Set a session pass so the auth guard in index.html lets guest through
+    sessionStorage.setItem('flowstate_guest_pass', '1');
     // Redirect to main website
     window.location.href = 'index.html';
   }

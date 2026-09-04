@@ -18,6 +18,34 @@
   <link rel="stylesheet" href="css/audio.css">
   <link rel="stylesheet" href="css/squad.css">
   <link rel="stylesheet" href="css/analytics.css">
+
+  <!-- ⚡ Auth Guard: Redirect unauthenticated users to login before app renders -->
+  <script>
+    (function () {
+      // Check for an active Supabase session in localStorage
+      // Supabase stores tokens under keys like: sb-<project-ref>-auth-token
+      function isAuthenticated() {
+        // Guest pass: if user explicitly chose guest mode in this tab session
+        if (sessionStorage.getItem('flowstate_guest_pass') === '1') return true;
+        // Supabase token check across all localStorage keys
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.includes('-auth-token')) {
+            try {
+              const val = JSON.parse(localStorage.getItem(key));
+              if (val && val.access_token) return true;
+            } catch (e) {}
+          }
+        }
+        return false;
+      }
+
+      if (!isAuthenticated()) {
+        // Not on login page already — redirect now before any render
+        window.location.replace('login.html');
+      }
+    })();
+  </script>
 </head>
 <body>
   <!-- Top-Level Offline & Deep Focus Active Banner -->
